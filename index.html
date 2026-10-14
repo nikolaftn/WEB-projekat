@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knjizare Srbija</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <header class="bg-blue-600 text-white shadow-2xl">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
+
+      <h1 class="text-2xl font-bold text-center sm:text-left">📚 Knjižare Srbija</h1>
+
+      <div class="flex flex-col sm:flex-row sm:items-center sm:gap-4 w-full sm:w-auto">
+
+        <nav class="flex flex-wrap justify-center sm:justify-end gap-3 text-sm sm:text-base">
+          <a href="index.html" class="hover:underline">Početna</a>
+          <a href="oNama.html" class="hover:underline">O nama</a>
+          <button id="kontaktBtn" class="hover:underline focus:outline-none">Kontakt</button>
+          <a href="admin-korisnici.html" class="hover:underline text-yellow-200">Admin korisnici</a>
+          <a href="admin-knjizare.html" class="hover:underline text-yellow-200">Admin knjižare</a>
+        </nav>
+
+        <div class="flex flex-wrap justify-center sm:justify-end gap-2 mt-3 sm:mt-0">
+          <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Prijava</button>
+          <button id="editProfileBtn" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Izmeni profil</button>
+          <button id="registerBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Registracija</button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <main class="max-w-7xl w-full mx-auto px-6 py-10">
+    <h2 class="text-6xl font-bold text-blue-700 mb-8 text-center" style="font-family: 'Merriweather', serif;">Sve knjižare u sistemu</h2>
+    <input type="text" id="searchInput" placeholder="Pretraga knjižara..." class="border p-2 mb-6 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+    <div id="knjizareGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </main>
+
+  <div id="loginPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative">
+      <h3 class="text-2xl font-bold mb-4">Prijava</h3>
+      <form id="loginForm" class="space-y-4" onsubmit="event.preventDefault(); prijaviSe();">
+        <input id="loginUsername" type="text" placeholder="Korisničko ime" class="border p-2 w-full rounded">
+        <input id="loginPassword" type="password" placeholder="Lozinka" class="border p-2 w-full rounded">
+        <p id="loginErrorMsg" class="text-red-600 mt-2 hidden"></p>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Prijavi se</button>
+          <button type="button" onclick="zatvoriLogin()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Otkaži</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="registerPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative max-h-[90vh] overflow-y-auto">
+      <h3 class="text-2xl font-bold mb-4">Registracija</h3>
+      <form id="registerForm" class="space-y-4" onsubmit="event.preventDefault(); registrujSe();">
+        <input id="regIme" type="text" placeholder="Ime" class="border p-2 w-full rounded">
+        <input id="regPrezime" type="text" placeholder="Prezime" class="border p-2 w-full rounded">
+        <input id="regKorisnickoIme" type="text" placeholder="Korisničko ime" class="border p-2 w-full rounded">
+        <input id="regLozinka" type="password" placeholder="Lozinka (min 8 karaktera)" class="border p-2 w-full rounded">
+        <input id="regEmail" type="email" placeholder="Email adresa" class="border p-2 w-full rounded">
+        <input id="regTelefon" type="text" placeholder="Broj telefona" class="border p-2 w-full rounded">
+        <input id="regAdresa" type="text" placeholder="Adresa" class="border p-2 w-full rounded">
+        <input id="regDatumRodjenja" type="date" placeholder="Datum rođenja" class="border p-2 w-full rounded">
+        <input id="regZanimanje" type="text" placeholder="Zanimanje" class="border p-2 w-full rounded">
+        <p id="registerErrorMsg" class="text-red-600 mt-2 hidden"></p>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Registruj se</button>
+          <button type="button" onclick="zatvoriRegister()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Otkaži</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="editProfilePopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative max-h-[90vh] overflow-y-auto">
+      <h3 class="text-2xl font-bold mb-4">Izmeni profil</h3>
+      <form id="editProfileForm" class="space-y-4" onsubmit="event.preventDefault(); sacuvajProfil();">
+        <input id="editIme" type="text" placeholder="Ime" class="border p-2 w-full rounded">
+        <input id="editPrezime" type="text" placeholder="Prezime" class="border p-2 w-full rounded">
+        <input id="editKorisnickoIme" type="text" placeholder="Korisničko ime" class="border p-2 w-full rounded">
+        <input id="editLozinka" type="password" placeholder="Lozinka (min 8 karaktera)" class="border p-2 w-full rounded">
+        <input id="editEmail" type="email" placeholder="Email adresa" class="border p-2 w-full rounded">
+        <input id="editTelefon" type="text" placeholder="Broj telefona" class="border p-2 w-full rounded">
+        <input id="editAdresa" type="text" placeholder="Adresa" class="border p-2 w-full rounded">
+        <input id="editDatumRodjenja" type="date" placeholder="Datum rođenja" class="border p-2 w-full rounded">
+        <input id="editZanimanje" type="text" placeholder="Zanimanje" class="border p-2 w-full rounded">
+        <p id="editProfileErrorMsg" class="text-red-600 mt-2 hidden"></p>
+        <div class="flex justify-end space-x-2">
+          <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Sačuvaj</button>
+          <button type="button" onclick="zatvoriEditProfile()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Otkaži</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="logoutPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative">
+      <h3 class="text-2xl font-bold mb-4">Odjava</h3>
+      <p id="logoutMsg" class="mb-4"></p>
+      <div class="flex justify-end space-x-2">
+        <button id="confirmLogoutBtn" onclick="potvrdiOdjavu()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Da</button>
+        <button onclick="zatvoriLogout()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Ne</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="globalError" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+      <div class="flex justify-between items-start">
+        <h4 class="text-xl font-semibold text-red-600">Greška</h4>
+        <button onclick="hideError()" class="text-gray-500 hover:text-gray-700">✕</button>
+      </div>
+      <p id="globalErrorMsg" class="text-gray-700 mt-4">Tekst greške</p>
+      <div class="mt-6 flex justify-end">
+        <button onclick="hideError()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">U redu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="kontaktPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative">
+      <h3 class="text-2xl font-bold mb-4">Kontakt</h3>
+      <p class="mb-2"><strong>Email:</strong> nradmanovic42@gmail.com</p>
+      <p class="mb-4"><strong>Telefon:</strong> 0621183211</p>
+      <div class="flex justify-end space-x-2">
+        <button onclick="zatvoriKontakt()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Zatvori</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="logoutMessage" class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Uspesno ste se odjavili!
+  </div>
+
+  <div id="loginMessage" class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Uspesno ste se prijavili!
+  </div>
+
+  <div id="registerMessage" class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Uspesna registracija! Sada se mozete prijaviti.
+  </div>
+
+  <div id="updateProfileMessage" class="hidden fixed right-5 top-20 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Profil je uspešno azuriran.
+  </div>
+
+  <footer class="bg-blue-600 text-white mt-6">
+    <div class="max-w-6xl mx-auto px-6 py-6 text-center text-sm">
+      &copy; 2025 Knjižare Srbija | Sva prava zadržana
+    </div>
+  </footer>
+
+  
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="js/index.js"></script>
+
+  <script>
+    document.getElementById('kontaktBtn').addEventListener('click', function() {
+      document.getElementById('kontaktPopup').classList.remove('hidden');
+    });
+
+    function zatvoriKontakt() {
+      document.getElementById('kontaktPopup').classList.add('hidden');
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', function() { 
+      document.getElementById('loginPopup').classList.remove('hidden'); 
+    });
+
+    document.getElementById('registerBtn').addEventListener('click', function() {
+      sakrijSvePopupe();
+      document.getElementById('registerPopup').classList.remove('hidden');
+    });
+
+    function zatvoriRegister() {
+      document.getElementById('registerPopup').classList.add('hidden');
+    }
+
+    document.getElementById('editProfileBtn').addEventListener('click', function() {
+      sakrijSvePopupe();
+      popuniEditProfileForm();
+      document.getElementById('editProfilePopup').classList.remove('hidden');
+    });
+
+    function zatvoriEditProfile() {
+      document.getElementById('editProfilePopup').classList.add('hidden');
+    }
+        
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalji knjižare - Knjižare Srbija</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <header class="bg-blue-600 text-white shadow-2xl">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">📚 Knjižare Srbija</h1>
+      <div class="flex items-center space-x-4">
+        <nav class="space-x-6">
+          <a href="index.html" class="hover:underline">Početna</a>
+          <a href="oNama.html" class="hover:underline">O nama</a>
+          <button id="kontaktBtn" class="hover:underline focus:outline-none">Kontakt</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl w-full mx-auto px-6 py-10">
+
+    <a href="index.html" class="text-blue-600 hover:underline mb-6 inline-block">← Nazad</a>
+
+    <div id="bookstoreDetails" class="bg-white p-8 rounded shadow text-center mb-8">
+      <h1 class="text-3xl font-bold mb-4 text-blue-700">Učitavanje...</h1>
+    </div>
+
+    <input 
+      type="text" 
+      id="bookSearchInput" 
+      placeholder="Pretraga knjiga po nazivu, autoru ili žanru..." 
+      class="border p-3 mb-8 w-full rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+    />
+
+    <div id="booksList" class="bg-white p-8 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-6 text-blue-700 text-center">Knjige u ponudi</h2>
+      <div id="booksContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full justify-center"></div>
+    </div>
+
+  </main>
+
+  <div id="kontaktPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative">
+      <h3 class="text-2xl font-bold mb-4">Kontakt</h3>
+      <p class="mb-2"><strong>Email:</strong> nradmanovic42@gmail.com</p>
+      <p class="mb-4"><strong>Telefon:</strong> 0621183211</p>
+      <div class="flex justify-end space-x-2">
+        <button onclick="zatvoriKontakt()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Zatvori</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-blue-600 text-white mt-6">
+    <div class="max-w-6xl mx-auto px-6 py-6 text-center text-sm">
+      &copy; 2025 Knjižare Srbija | Sva prava zadržana
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script src="js/bookstore.js"></script>
+
+  <script>
+    document.getElementById('kontaktBtn').addEventListener('click', function() {
+      document.getElementById('kontaktPopup').classList.remove('hidden');
+    });
+
+    function zatvoriKontakt() {
+      document.getElementById('kontaktPopup').classList.add('hidden');
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin panel - Knjižare</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    main { flex: 1; }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <header class="bg-blue-600 text-white p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Admin panel</h1>
+      <nav>
+        <a href="index.html" class="mr-4 hover:underline">Početna</a>
+        <a href="admin-knjizare.html" class="font-semibold underline">Knjižare</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto mt-8 p-6 bg-white shadow rounded">
+    <h2 class="text-2xl font-semibold mb-4">Pregled svih knjižara</h2>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="border p-2 text-left">Naziv</th>
+            <th class="border p-2 text-left">Adresa</th>
+            <th class="border p-2 text-left">Godina osnivanja</th>
+            <th class="border p-2 text-left">Telefon</th>
+            <th class="border p-2 text-left">Email</th>
+            <th class="border p-2 text-left">Akcije</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaKnjizara" class="divide-y divide-gray-200"></tbody>
+      </table>
+    </div>
+
+    <div id="formaIzmena" class="hidden mt-8 p-6 border rounded bg-gray-50">
+      <h3 class="text-xl font-semibold mb-4">Izmena knjižare</h3>
+      <form id="formaIzmeniKnjizaru" class="grid grid-cols-1 md:grid-cols-2 gap-4" novalidate>
+        <input type="hidden" id="knjizaraId">
+
+        <div>
+          <label class="block text-sm font-medium">Naziv</label>
+          <input id="izmenaNaziv" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Adresa</label>
+          <input id="izmenaAdresa" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Godina osnivanja</label>
+          <input id="izmenaGodina" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Telefon</label>
+          <input id="izmenaTelefon" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Email</label>
+          <input id="izmenaEmail" type="email" class="w-full border p-2 rounded">
+        </div>
+
+        <div class="col-span-2 flex justify-between mt-4">
+          <button type="button" id="otkaziIzmenu" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Otkaži</button>
+          <div>
+            <button type="button" id="urediKnjigeBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mr-2">Uredi knjige</button>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Sačuvaj izmene</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div id="sekcijaKnjiga" class="hidden mt-8 p-6 border rounded bg-gray-50">
+      <h3 class="text-xl font-semibold mb-4">Knjige knjižare</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-300">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="border p-2 text-left">Naziv</th>
+              <th class="border p-2 text-left">Autor</th>
+              <th class="border p-2 text-left">Cena</th>
+              <th class="border p-2 text-left">Akcije</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaKnjiga" class="divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+      <button id="dodajKnjiguBtn" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Dodaj novu knjigu</button>
+    </div>
+
+    <div id="formaKnjiga" class="hidden mt-6 p-6 border rounded bg-gray-50">
+      <h3 class="text-xl font-semibold mb-4" id="naslovKnjigaForme">Izmena knjige</h3>
+      <form id="formaIzmeniKnjigu" class="grid grid-cols-1 md:grid-cols-2 gap-4" novalidate>
+        <input type="hidden" id="knjigaId">
+
+        <div>
+          <label class="block text-sm font-medium">Naziv</label>
+          <input id="knjigaNaziv" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Autor</label>
+          <input id="knjigaAutor" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Cena</label>
+          <input id="knjigaCena" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Žanr</label>
+          <input id="knjigaZanr" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Opis</label>
+          <textarea id="knjigaOpis" class="w-full border p-2 rounded"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Broj strana</label>
+          <input id="knjigaBrojStrana" type="number" class="w-full border p-2 rounded">
+        </div>
+
+        <div class="col-span-2 flex justify-between mt-4">
+          <button type="button" id="otkaziKnjigu" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Otkaži</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" id="sacuvajKnjiguBtn">Sačuvaj knjigu</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="obrisanaKnjizaraMessage"
+    class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Knjizara uspesno obrisana!
+  </div>
+
+  <div id="obrisanaKnjizaraError"
+    class="hidden fixed top-20 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Doslo je do greske pri brisanju knjizare!
+  </div>
+
+  <div id="praznaPoljaMessage"
+    class="hidden fixed top-20 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Naziv i adresa su obavezni!
+  </div>
+
+  <div id="izmenjenaKnjizaraMessage"
+    class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Podaci o knjizari su uspešno azurirani!
+  </div>
+
+  <div id="obrisanaKnjigaMessage"
+    class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Knjiga uspesno obrisana!
+  </div>
+
+  <div id="obrisanaKnjigaError"
+    class="hidden fixed top-20 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Doslo je do greske pri brisanju knjige!
+  </div>
+
+  <div id="knjigaNijePronadjenaMessage"
+    class="hidden fixed top-20 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Knjiga nije pronadjena!
+  </div>
+
+  <div id="obaveznaPoljaMessage"
+    class="hidden fixed top-20 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Naziv, autor i cena su obavezni!
+  </div>
+
+  <div id="knjigaSacuvanaMessage"
+    class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Knjiga uspesno sacuvana!
+  </div>
+
+  <div id="confirmDeleteStorePopup"
+    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 text-center w-80">
+      <p class="text-lg font-semibold mb-6">Da li ste sigurni da zelite da obrisete ovu knjizaru?</p>
+      <div class="flex justify-center space-x-4">
+        <button id="confirmDeleteStoreYes"
+                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Da</button>
+        <button id="confirmDeleteStoreNo"
+                class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Ne</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmDeleteBookPopup"
+     class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow-xl p-6 text-center w-80">
+    <p class="text-lg font-semibold mb-6">Da li ste sigurni da zelite da obrisete ovu knjigu?</p>
+    <div class="flex justify-center space-x-4">
+      <button id="confirmDeleteBookYes"
+              class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Da</button>
+      <button id="confirmDeleteBookNo"
+              class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Ne</button>
+    </div>
+  </div>
+</div>
+
+  <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+    <p>© 2025 Knjižare Srbija | Admin panel</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <script src="js/admin-knjizare.js"></script>
+</body>
+</html>

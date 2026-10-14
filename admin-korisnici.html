@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin panel - Korisnici</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <header class="bg-blue-600 text-white p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Admin panel</h1>
+      <nav>
+        <a href="index.html" class="mr-4 hover:underline">Početna</a>
+        <a href="admin-korisnici.html" class="font-semibold underline">Korisnici</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto mt-8 p-6 bg-white shadow rounded">
+    <h2 class="text-2xl font-semibold mb-4 text-blue-700">Pregled svih korisnika</h2>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="border p-2 text-left">Ime</th>
+            <th class="border p-2 text-left">Prezime</th>
+            <th class="border p-2 text-left">Korisničko ime</th>
+            <th class="border p-2 text-left">Email</th>
+            <th class="border p-2 text-left">Telefon</th>
+            <th class="border p-2 text-left">Adresa</th>
+            <th class="border p-2 text-left">Zanimanje</th>
+            <th class="border p-2 text-left">Akcije</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaKorisnika" class="divide-y divide-gray-200"></tbody>
+      </table>
+    </div>
+
+    <div id="formaIzmena" class="hidden mt-8 p-6 border rounded bg-gray-50">
+      <h3 class="text-xl font-semibold mb-4">Izmena korisnika</h3>
+      <form id="formaIzmeniKorisnika" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="hidden" id="korisnikId">
+
+        <div>
+          <label class="block text-sm font-medium">Ime</label>
+          <input id="izmenaIme" type="text" class="w-full border p-2 rounded" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Prezime</label>
+          <input id="izmenaPrezime" type="text" class="w-full border p-2 rounded" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Korisničko ime</label>
+          <input id="izmenaKorisnickoIme" type="text" class="w-full border p-2 rounded" disabled>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Email</label>
+          <input id="izmenaEmail" type="email" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Telefon</label>
+          <input id="izmenaTelefon" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Adresa</label>
+          <input id="izmenaAdresa" type="text" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Datum rođenja</label>
+          <input id="izmenaDatumRodjenja" type="date" class="w-full border p-2 rounded">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Zanimanje</label>
+          <input id="izmenaZanimanje" type="text" class="w-full border p-2 rounded">
+        </div>
+
+        <div class="col-span-2 flex justify-end space-x-3 mt-4">
+          <button type="button" id="otkaziIzmenu" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Otkaži</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Sačuvaj izmene</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="brisanjeErrorMessage"
+    class="hidden fixed top-20 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Doslo je do greske pri brisanju korisnika!
+  </div>
+
+  <div id="obrisanKorisnikMessage"
+    class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Korisnik uspesno obrisan!
+  </div>
+
+  <div id="izmenaErrorMessage"
+    class="hidden fixed top-20 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Doslo je do greske pri izmeni korisnika!
+  </div>
+
+  <div id="izmenjenKorisnikMessage"
+    class="hidden fixed top-20 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    Korisnik uspesno izmenjen!
+  </div>
+
+  <div id="confirmDeletePopup"
+    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl p-6 text-center w-80">
+      <p class="text-lg font-semibold mb-6">Da li ste sigurni da zelite da obrisete ovog korisnika?</p>
+      <div class="flex justify-center space-x-4">
+        <button id="confirmYes"
+                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Da</button>
+        <button id="confirmNo"
+                class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Ne</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+    <p>© 2025 Knjižare Srbija | Admin panel</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <script src="js/admin-korisnici.js"></script>
+</body>
+</html>
